@@ -1,0 +1,44 @@
+export const defCfg = {
+  "backgroundType": null,
+  "bgColor": "#FFFFFF",
+  "bgImage": "",
+  "tabList": [{
+    "title": "首页",
+    "upIcon": "https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/ws-smart-life/cart/cart-icon.png",
+    "downIcon": "https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/ws-smart-life/cart/charge-icon.png",
+    "defaultIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678173890498_msW2K.png",
+    "activeIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678174025974_O5L18.png",
+    "gifIcon": "",
+    "linkType": 1,
+    "miniAppLink": "/pages/smartIndex/smartIndex",
+    "deepLink": "wsf://app/pagehome?tab=home",
+    "h5Link": ""
+  }, {
+    "title": "优选",
+    "defaultIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678173901246_AHrMF.png",
+    "activeIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678174032874_toNR1.png",
+    "gifIcon": "",
+    "linkType": 3,
+    "miniAppLink": "pages/index/index",
+    "deepLink": "",
+    "h5Link": "https://m.wsfmall.com"
+  }, {
+    "title": "购物车",
+    "defaultIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678173908752_d2528.png",
+    "activeIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678174037138_xyG9W.png",
+    "gifIcon": "",
+    "linkType": 1,
+    "miniAppLink": "/pages/smartCart/smartCart",
+    "deepLink": "wsf://app/pagehome?tab=shopcart",
+    "h5Link": ""
+  }, {
+    "title": "我的",
+    "defaultIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678173915225_l1JVP.png",
+    "activeIcon": "https://wanshunjiaoche-file-public-1301582899.cos.ap-guangzhou.myqcloud.com/oaPermissionConsoleImpl/5/1678174041457_HB71e.png",
+    "gifIcon": "",
+    "linkType": 1,
+    "miniAppLink": "/pages/smartUCenter/smartUCenter",
+    "deepLink": "wsf://app/pagehome?tab=mine",
+    "h5Link": ""
+  }]
+}

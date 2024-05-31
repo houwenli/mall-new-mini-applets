@@ -1,0 +1,975 @@
+<template>
+	<view>
+		<!-- <view class="wsf-cell-group">
+			<view class="wsf-cell-item" @click="openCouponModel">
+				<view class="wsf-cell-title">优惠</view>
+				<view class="wsf-cell-value">
+					<view class="coupon-part" v-if="couponList && couponList.length > 0">
+						<text class="get_icon">领券</text>
+						<block v-for="(item, index) in couponList" :key="index">
+							<view class="coupon_icon">
+								<span v-if="item.type == 0">立减{{ item.price }}</span>
+								<span v-else-if="item.type == 1">满{{ item.fullPrice }}减{{ item.price }}</span>
+								<span v-else-if="item.type == 2">满{{ item.fullPrice }}享{{ item.discountRate }}</span>
+								<text class="left-radius"></text>
+								<text class="right-radius"></text>
+							</view>
+						</block>
+					</view>
+					<view class="gift-part u-line-1" v-if="skuData.marketingVos && skuData.marketingVos.length > 0">
+						<block v-for="(item, index) in skuData.marketingVos" :key="index">
+							<text class="get_icon" v-if="item.type == 2">赠品</text>
+							<text class="u-margin-left-16" style="vertical-align: middle;" v-if="item.type == 2">
+								{{
+									item.fullGiftList[0].fullPrice > 0
+										? '满' + item.fullGiftList[0].fullPrice + '赠 ' + item.fullGiftList[0].giftSkuInfos[0].name
+										: item.fullGiftList[0].giftSkuInfos[0].name
+								}}
+							</text>
+						</block>
+					</view>
+				</view>
+				<view class="wsf-cell-icon"><u-icon size="24" name="arrow-right" color="#999"></u-icon></view>
+			</view>
+		</view> -->
+
+		<wsf-popup v-model="couponShow" mode="bottom" title="优惠" height="880rpx">
+			<view class="coupon-container">
+				<scroll-view scroll-y="true" class="scroll-Y">
+					<!-- <view class="title" v-if="giftProductList && giftProductList.length > 0">促销</view>
+					<view class="gift-container" v-if="giftProductList && giftProductList.length > 0">
+						<block v-for="(item, index) in giftProductList" :key="index">
+							<view class="gift-stage">
+								<view class="gift-stage-title">
+									<i>赠品</i>
+									<span>{{ item.fullPrice > 0 ? '满' + item.fullPrice + '赠 (赠完为止)' : '赠品 (赠完为止)' }}</span>
+								</view>
+								<view class="gift-list-one" v-if="item.giftSkuInfos && item.giftSkuInfos.length < 3">
+									<block v-for="(n, i) in item.giftSkuInfos" :key="i">
+										<view class="gift-product" @click="goSkuDetail(n.skuId)">
+											<view class="image-box">
+												<image :src="n.url"></image>
+												<i>x{{ n.num }}</i>
+											</view>
+											<view class="content u-line-2">{{ n.name }}</view>
+										</view>
+									</block>
+								</view>
+								<view class="gift-list-two" v-else-if="item.giftSkuInfos && item.giftSkuInfos.length >= 3">
+									<scroll-view :scroll-x="true" class="scroll-x">
+										<block v-for="(n, i) in item.giftSkuInfos" :key="i">
+											<view class="gift-product" @click="goSkuDetail(n.skuId)">
+												<view class="image-box">
+													<image :src="n.url"></image>
+													<i>x{{ n.num }}</i>
+												</view>
+											</view>
+										</block>
+									</scroll-view>
+								</view>
+							</view>
+						</block>
+					</view> -->
+					<!-- <view class="title" v-if="couponList && couponList.length > 0">优惠券</view> -->
+					<view class="estimate-module">
+						<view class="estimate-card-final-price u-margin-bottom-30">
+							<view class="price" v-if="selectCouponItem">¥{{selectCouponItem.afterCouponPrice.toFixed(2)}}</view>
+							<view class="price" v-else>¥{{skuData.price && skuData.price.toFixed(2)}}</view>
+							<view class="text">预估到手</view>
+						</view>
+						<view class="detail-bubble" v-if="selectCouponItem">
+							<!-- <view class="detail-bubble-title">当前购买可使用以下优惠</view>
+							<view class="detail-bubble-content" v-if="selectCouponItem.couponsType != 2">¥{{selectCouponItem.beforeCouponPrice.toFixed(2)}} - ¥{{selectCouponItem.faceValue}}</view>
+							<view class="detail-bubble-content" v-else>¥{{selectCouponItem.beforeCouponPrice.toFixed(2)}} X {{selectCouponItem.faceValue}}折</view>
+							<view>
+								<view class="estimate-card u-margin-right-64">
+									<view class="text">当前售价</view>
+									<view class="price">¥{{selectCouponItem.beforeCouponPrice.toFixed(2)}}</view>
+								</view>
+								<view class="estimate-card">
+									<view class="text">商品券</view>
+									<view class="price" v-if="selectCouponItem.couponsType == 1">满{{selectCouponItem.amountLimitation}}减{{selectCouponItem.faceValue}}</view>
+									<view class="price" v-if="selectCouponItem.couponsType == 2">{{selectCouponItem.faceValue}}折</view>
+									<view class="price" v-if="selectCouponItem.couponsType == 3">满{{selectCouponItem.faceValue}}减{{selectCouponItem.faceValue}}</view>
+								</view>
+							</view> -->
+
+							<view class="detail-bubble-title">当前购买可使用以下优惠</view>
+
+							<view class="detail-bubble-box">
+								<view class="price-box">
+									<view class="detail-bubble-content font-din">¥{{ selectCouponItem.beforeCouponPrice.toFixed(2) }}</view>
+									<view class="estimate-card">
+										<view class="text">当前售价</view>
+										<view class="price">¥{{selectCouponItem.beforeCouponPrice.toFixed(2)}}</view>
+									</view>
+								</view>
+
+								<view class="detail-bubble-content price-type">
+									<text v-if="selectCouponItem.couponsType != 2">-</text>
+									<text v-else>X</text>
+								</view>
+
+								<view class="price-box">
+									<view class="detail-bubble-content font-din"><text v-if="selectCouponItem.couponsType != 2">¥</text>{{ selectCouponItem.faceValue }}<text v-if="selectCouponItem.couponsType == 2">折</text></view>
+									<view class="estimate-card">
+										<view class="text">商品券</view>
+										<view class="price" v-if="selectCouponItem.couponsType == 1">满{{selectCouponItem.amountLimitation}}减{{selectCouponItem.faceValue}}</view>
+										<view class="price" v-if="selectCouponItem.couponsType == 2">{{selectCouponItem.faceValue}}折</view>
+										<view class="price" v-if="selectCouponItem.couponsType == 3">满{{selectCouponItem.faceValue}}减{{selectCouponItem.faceValue}}</view>
+									</view>
+								</view>
+
+							</view>
+						</view>
+						<view class="detail-bubble" v-else>
+							<view class="detail-bubble-title">当前购买可使用以下优惠</view>
+							<view class="nonuse-content">不使用优惠券</view>
+						</view>
+					</view>
+
+					<view class="coupon-list-title u-flex">
+                        <image class="ic_youhui" src="@/static/img/icon/ic_youhui.png"></image>
+                        <span>优惠券</span>
+                    </view>
+
+					<view class="title">可用</view>
+
+					<view class="coupon-list">
+						<block v-for="(item, index) in usableCouponList" :key="index">
+							 <view class="coupon product-coupon">
+								<view class="main-ticket">
+									<view class="main-mark product-mark">商品券</view>
+									<view class="coupon-detail">
+										<view class="coupon-price product-color">
+											<text class="text" v-if="item.couponsType != 2">￥</text>
+											<text class="price">{{ item.faceValue }}</text>
+											<text class="text" v-if="item.couponsType == 2">折</text>
+										</view>
+										<view class="coupon-info">
+											<view class="condition" v-if="item.couponsType == 1">满{{ item.amountLimitation }}可用</view>
+            					<view class="condition" v-else-if="item.couponsType == 3">满{{ item.faceValue }}元可用</view>
+											<view class="condition" v-else>无门槛</view>
+											<view class="indate">
+												{{ $u.timeFormat(new Date(item.effectiveStartTime.replace(/-/g,"/")).getTime(), 'yyyy.mm.dd') }}-{{ $u.timeFormat(new Date(item.effectiveEndTime.replace(/-/g,"/")).getTime(), 'yyyy.mm.dd') }}
+											</view>
+										</view>
+									</view>
+								</view>
+								<view class="stub-ticket">
+									<image
+											src="https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/wsf-mall/prev-icon-list/cat_Selected%402x.png"
+											alt=""
+											class="choosebox"
+											v-if="selectCouponItem && selectCouponItem.id == item.id"
+											@tap="selectCoupon(null)"
+										></image>
+										<image src="https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/wsf-mall/main-packages/activity/cat_ns_platform%402x.png" alt="" class="choosebox" v-else @tap="selectCoupon(item)"></image>
+								</view>
+							</view>
+
+
+							<!-- <view class="coupon platform-coupon" v-if="item.couponSource == 0">
+								<text class="top-round-corner"></text>
+								<text class="bottom-round-corner"></text>
+								<view class="main-ticket">
+									<view class="main-mark platform-mark">平台券</view>
+									<view class="coupon-detail">
+										<view class="coupon-price platform-color">
+											<text class="text" v-if="item.type != 2">￥</text>
+											<text class="price">{{ item.type == 2 ? parseInt(item.discountRate * 100) / 10 : item.price }}</text>
+											<text class="text" v-if="item.type == 2">折</text>
+										</view>
+										<view class="coupon-info">
+											<view class="condition" v-if="item.type != 0">满{{ item.fullPrice }}可用</view>
+											<view class="indate" v-if="item.validityType == 0">
+												{{ $u.timeFormat(new Date(item.validityStartTime).getTime(), 'yyyy.mm.dd') }}-{{ $u.timeFormat(new Date(item.validityEndTime).getTime(), 'yyyy.mm.dd') }}
+											</view>
+
+											<view class="indate" v-else>领券起{{ item.validityRelativeDaysNum }}日内</view>
+										</view>
+									</view>
+									<view class="coupon-explain">
+										<text v-if="item.permittedType == 0">全</text>
+										<text>平台</text>
+										<text v-if="item.permittedType == 2">部分</text>
+										<text v-if="item.permittedType == 1">部分分类</text>
+										<text>商品可用，</text>
+										<text v-if="item.exclusionType == 1">不</text>
+										<text>可与店铺券叠加使用</text>
+									</view>
+								</view>
+								<view class="stub-ticket">
+									<image class="stub-mark" v-if="item.webFlag == 2 || item.webFlag == 3" src="https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/wsf-mall/main-packages/activity/ylq02%402x.png" alt=""></image>
+									<image class="stub-mark" v-else-if="item.webFlag == 1" src="https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/wsf-mall/main-packages/activity/yqw%402x.png" alt=""></image>
+									<button class="get-coupon-button platform-btn" v-if="item.webFlag == 0 || item.webFlag == 3" @click="getPlatformCoupon(item.id)">立即领取</button>
+								</view>
+							</view>
+
+							<view class="coupon store-coupon" v-else>
+								<text class="top-round-corner"></text>
+								<text class="bottom-round-corner"></text>
+								<view class="main-ticket">
+									<view class="main-mark store-mark">店铺券</view>
+									<view class="coupon-detail">
+										<view class="coupon-price store-color">
+											<text class="text" v-if="item.type != 2">￥</text>
+											<text class="price">{{ item.type == 2 ? parseInt(item.discountRate * 100) / 10 : item.price }}</text>
+											<text class="text" v-if="item.type == 2">折</text>
+										</view>
+										<view class="coupon-info">
+											<view class="condition" v-if="item.type != 0">满{{ item.fullPrice }}可用</view>
+											<view class="indate">
+												{{ $u.timeFormat(new Date(item.validityStartTime).getTime(), 'yyyy.mm.dd') }}-{{ $u.timeFormat(new Date(item.validityEndTime).getTime(), 'yyyy.mm.dd') }}
+											</view>
+										</view>
+									</view>
+								</view>
+								<view class="stub-ticket">
+									<image v-if="item.isReceive == 1" class="stub-mark" src="https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/wsf-mall/main-packages/activity/ylq01%402x.png" alt=""></image>
+									<image v-else-if="item.runOut" class="stub-mark" src="@/static/img/activity/yqw@2x.png" alt=""></image>
+									<button v-else-if="item.isReceive == 0" class="get-coupon-button store-btn" @click="getcoupon(item.id)">立即领取</button>
+								</view>
+							</view> -->
+						</block>
+
+						<!-- <p class="coupon-hint" @click="navigateTo('UserCoupon')">
+							<text>已领取优惠券的详细信息可在“</text>
+							<text class="markedness">我的-优惠券</text>
+							<text>”中查看</text>
+						</p> -->
+					</view>
+
+					<view class="title" v-if="disableCouponList && disableCouponList.length > 0">当前不可用</view>
+
+					<view class="coupon-list" v-if="disableCouponList && disableCouponList.length > 0">
+						<block v-for="(item, index) in disableCouponList" :key="index">
+							 <view class="coupon disabled-coupon">
+								<view class="main-ticket">
+									<view class="main-mark disabled-mark">商品券</view>
+									<view class="coupon-detail">
+										<view class="coupon-price disabled-color">
+											<text class="text" v-if="item.couponsType != 2">￥</text>
+											<text class="price">{{ item.faceValue }}</text>
+											<text class="text" v-if="item.couponsType == 2">折</text>
+										</view>
+										<view class="coupon-info">
+											<view class="condition" v-if="item.couponsType == 1">满{{ item.amountLimitation }}可用</view>
+            					<view class="condition" v-else-if="item.couponsType == 3">满{{ item.faceValue }}元可用</view>
+											<view class="condition" v-else>无门槛</view>
+											<view class="indate">
+												{{ $u.timeFormat(new Date(item.effectiveStartTime.replace(/-/g,"/")).getTime(), 'yyyy.mm.dd') }}-{{ $u.timeFormat(new Date(item.effectiveEndTime.replace(/-/g,"/")).getTime(), 'yyyy.mm.dd') }}
+											</view>
+										</view>
+									</view>
+								</view>
+								<view class="stub-ticket"></view>
+							</view>
+						</block>
+					</view>
+					<!-- </block> -->
+				</scroll-view>
+				<view class="coupon-confirm-button" @tap="confirmSelectCoupon()">确定</view>
+			</view>
+		</wsf-popup>
+	</view>
+</template>
+
+<script>
+export default {
+	data() {
+		return {
+			isProcess: false,
+			giftProductList: [],
+			couponShow: false,
+			isHaveGift: false,
+			usableCouponList: [],
+			disableCouponList: [],
+			selectCouponItem: null
+		};
+	},
+	props: {
+		// couponList: {
+		// 	type: Array,
+		// 	default() {
+		// 		return [];
+		// 	}
+		// },
+		skuData: {
+			type: Object,
+			default() {
+				return {};
+			}
+		}
+	},
+	filters: {
+		formatDate(date) {
+			let newDate = new Date(date.replace(/-/g, '/'));
+			let time = newDate.getFullYear() + '.' + (newDate.getMonth() + 1) + '.' + newDate.getDate();
+			return time;
+		}
+	},
+	methods: {
+		navigateTo(sceneName, params) {
+			this.$wsf.go(sceneName, params);
+		},
+		initData() {
+			if (this.skuData.marketingVos) {
+				let list = this.skuData.marketingVos;
+				for (let i in list) {
+					if (list[i].type == 2) {
+						this.isHaveGift = true;
+						this.giftProductList = list[i].fullGiftList;
+						console.log(this.giftProductList, 'this.giftProductList');
+						return;
+					}
+				}
+			}
+		},
+		showToastError(errMsg, duration = 1500) {
+			uni.showToast({
+				title: errMsg,
+				icon: 'none',
+				mask: true,
+				duration: duration
+			});
+		},
+		openCouponModel() {
+			let params = {
+				sourceType: 1,
+				spuDiscountBos: [{
+					spuId: this.skuData.spuId,
+					num: 1,
+					// beforeCouponPrice: this.skuData.price
+					skuId: this.skuData.id
+				}]
+			}
+			// this.$u.api.GetUserCoupons(params).then(res => {
+			this.$u.api.queryDiscounts(params).then(res => {
+				let list = res.data.couponList, usableCouponList = [], disableCouponList = []
+				list.forEach(item => {
+					if(item.usable == true) {
+						usableCouponList.push(item)
+					} else {
+						disableCouponList.push(item)
+					}
+					if(!this.selectCouponItem && this.skuData.afterCouponPrice && item.checked == true) {
+						this.selectCouponItem = item
+					}
+				})
+				this.usableCouponList = usableCouponList
+				this.disableCouponList = disableCouponList
+				this.couponShow = true;
+			})
+		},
+		getcoupon(id) {
+			let list = [];
+			list.push(id);
+			let data = {
+				couponIdList: list
+			};
+			this.$u.api.ReceiveCoupons(data).then(res => {
+				this.showToastError('领取成功');
+				this.$emit('updateCouponList');
+			});
+		},
+		getPlatformCoupon(id) {
+			if (this.isProcess) {
+				return;
+			}
+			this.isProcess = true;
+			this.$u.api
+				.receiveCoupon(id)
+				.then(res => {
+					if (res.code == 200) {
+						if(res.data == 1) {
+							this.showToastError('领取成功')
+						} else {
+							this.showToastError('该优惠券已被领完')
+						}
+						this.$emit('updateCouponList');
+					} else {
+						this.showToastError(res.description);
+					}
+				})
+				.finally(() => {
+					this.isProcess = false;
+				});
+		},
+		goSkuDetail(id) {
+			this.$wsf.go('SkuDetail', { skuId: id });
+		},
+		selectCoupon(item) {
+			this.selectCouponItem = item
+		},
+		confirmSelectCoupon() {
+			if(this.selectCouponItem) {
+				this.$parent.skuDetail.afterCouponPrice = this.selectCouponItem.afterCouponPrice
+			} else {
+				this.$parent.skuDetail.afterCouponPrice = null
+			}
+			this.couponShow = false
+		}
+	}
+};
+</script>
+
+<style lang="scss" scoped>
+.wsf-cell-group {
+	padding: 26rpx 32rpx;
+	.wsf-cell-item {
+		display: flex;
+		align-items: flex-start;
+		.wsf-cell-title {
+			font-weight: bold;
+			height: 54rpx;
+			line-height: 54rpx;
+			width: 92rpx;
+		}
+		.wsf-cell-value {
+			text-align: left;
+			color: #000;
+			width: 570rpx;
+			min-height: 54rpx;
+			line-height: 54rpx;
+		}
+		.wsf-cell-icon {
+			line-height: 54rpx;
+			height: 54rpx;
+		}
+	}
+}
+.get_icon {
+	vertical-align: middle;
+	display: inline-block;
+	width: 58rpx;
+	height: 26rpx;
+	border-radius: 4rpx;
+	border: 2rpx solid $wsf-color-red;
+	text-align: center;
+	line-height: 24rpx;
+	font-size: 20rpx;
+	color: $wsf-color-red;
+}
+.coupon-part {
+	overflow: hidden;
+	height: 54rpx;
+	.coupon_icon {
+		// vertical-align: middle;
+		display: inline-block;
+		padding: 0 10rpx;
+		height: 32rpx;
+		line-height: 32rpx;
+		background: #fd2929;
+		border-radius: 4rpx;
+		font-size: 20rpx;
+		color: #fff;
+		position: relative;
+		margin-left: 16rpx;
+		vertical-align: middle;
+		.left-radius {
+			background-color: #fff;
+			position: absolute;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			left: 0;
+			height: 8rpx;
+			width: 8rpx;
+			border-radius: 0 50% 50% 0;
+		}
+		.right-radius {
+			background-color: #fff;
+			position: absolute;
+			top: 50%;
+			transform: translate(50%, -50%);
+			right: 0;
+			height: 8rpx;
+			width: 8rpx;
+			border-radius: 50% 0 0 50%;
+		}
+	}
+}
+.coupon-container {
+	width:100%;
+	padding: 0 24rpx;
+	overflow-x:hidden;
+	.scroll-Y {
+		height: 1050rpx;
+
+		::-webkit-scrollbar {
+		  width: 0;
+		  height: 0;
+		  color: transparent;
+		}
+		.title {
+			padding:48rpx 0 24rpx;
+			line-height: 36rpx;
+			color: #000;
+			font-size: 32rpx;
+		}
+		.gift-container {
+			padding: 24rpx;
+			background: #f5f5f5;
+			border-radius: 20rpx;
+			margin-bottom: 60rpx;
+			width: 90vw;
+			.gift-stage {
+				margin-top: 40rpx;
+				&:first-child {
+					margin-top: 0;
+				}
+				.gift-stage-title {
+					display: inline-flex;
+					align-items: center;
+					padding-bottom: 20rpx;
+					i {
+						width: 58rpx;
+						height: 26rpx;
+						border-radius: 4rpx;
+						border: 2rpx solid $wsf-color-red;
+						text-align: center;
+						line-height: 22rpx;
+						font-size: 20rpx;
+						color: $wsf-color-red;
+						vertical-align: middle;
+						margin-right: 16rpx;
+					}
+					span {
+						line-height: 28rpx;
+						color: $wsf-color-red;
+					}
+				}
+				.image-box {
+					width: 100rpx;
+					height: 100rpx;
+					border-radius: 6rpx;
+					position: relative;
+					image {
+						width: 100%;
+						height: 100%;
+					}
+					i {
+						position: absolute;
+						right: 0;
+						bottom: 0;
+						padding: 0 4rpx;
+						color: #fff;
+						background: rgba(0, 0, 0, 0.3);
+						border-radius: 6rpx;
+						font-size: 18rpx;
+					}
+				}
+				.gift-list-one {
+					display: flex;
+					justify-content: space-between;
+					.gift-product {
+						width: 310rpx;
+						height: 104rpx;
+						border-radius: 6rpx;
+						border: 2rpx solid #fecacd;
+						background-color: #fff;
+						display: inline-flex;
+						align-items: center;
+
+						.content {
+							flex: 1;
+							margin: 18rpx;
+							color: #666;
+							font-size: 20rpx;
+						}
+					}
+				}
+				.gift-list-two {
+					.scroll-x {
+						height: 104rpx;
+						white-space: nowrap;
+					}
+					.gift-product {
+						vertical-align: top;
+						display: inline-block;
+						border-radius: 6rpx;
+						border: 2rpx solid #fecacd;
+						margin-right: 10rpx;
+					}
+				}
+			}
+		}
+		.coupon {
+			margin-bottom: 20rpx;
+			width: 678rpx;
+			height: 172rpx;
+			background: url('https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/wsf-mall/prev-icon-list/coupon_bg%402x.png');
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			.left {
+				display: inline-block;
+				width: 488rpx;
+				padding: 32rpx 0 32rpx 24rpx;
+				height: 100%;
+				.content {
+					color: $wsf-color-red;
+					padding-bottom: 24rpx;
+					.bold {
+						font-weight: bold;
+					}
+					.number {
+						font-size: 72rpx;
+						line-height: 56rpx;
+					}
+				}
+				.date {
+					font-size: 26rpx;
+					color: $wsf-color-red;
+					line-height: 24rpx;
+				}
+			}
+			.right {
+				vertical-align: top;
+				display: inline-flex;
+				width: 188rpx;
+				height: 100%;
+				justify-content: center;
+				align-items: center;
+				position: relative;
+				.btn {
+					width: 120rpx;
+					height: 48rpx;
+					background: $wsf-color-red;
+					border-radius: 28rpx;
+					line-height: 48rpx;
+					color: #fff;
+					text-align: center;
+					font-size: 20rpx;
+				}
+				.text {
+					color: #fe8993;
+					font-size: 26rpx;
+				}
+				.is_have {
+					width: 72rpx;
+					height: 58rpx;
+					position: absolute;
+					right: 0;
+					bottom: 0;
+				}
+			}
+		}
+
+		.coupon-list {
+			.coupon-hint {
+				line-height: 38rpx;
+				margin-top: 40rpx;
+				text-align: center;
+				color: #999;
+				font-size: 26rpx;
+				width: 100vw;
+				margin-left: -36rpx;
+				.markedness {
+					color: #e71021;
+				}
+			}
+			.product-coupon {
+				background: #fef4f4;
+			}
+			.store-coupon {
+				background: #fff7ee;
+			}
+			.disabled-coupon {
+				background: #f2f2f2;
+			}
+			.coupon {
+				width: 100%;
+				margin-bottom: 20rpx;
+				height: 196rpx;
+				border-radius: 16rpx;
+				overflow: hidden;
+				display: flex;
+				position: relative;
+				.top-round-corner {
+					background-color: #fff;
+					position: absolute;
+					top: -16rpx;
+					right: 192rpx;
+					transform: translate(50%, 0);
+					height: 28rpx;
+					width: 28rpx;
+					border-radius: 0 0 50% 50%;
+					z-index: 2;
+				}
+				.bottom-round-corner {
+					background-color: #fff;
+					position: absolute;
+					bottom: -16rpx;
+					right: 192rpx;
+					transform: translate(50%, 0);
+					height: 28rpx;
+					width: 28rpx;
+					border-radius: 50% 50% 0 0;
+					z-index: 2;
+				}
+				.main-ticket {
+					// width: 502rpx;
+					flex: 1;
+					position: relative;
+					padding: 60rpx 0 60rpx 36rpx;
+					.coupon-detail {
+						display: inline-flex;
+						align-items: center;
+						height: 76rpx;
+						.store-color {
+							color: #fe8c02;
+						}
+						.product-color {
+							color: #e60113;
+						}
+						.disabled-color {
+							color: #999 !important;
+						}
+						.coupon-price {
+							font-weight: 600;
+							display: inline-flex;
+							align-items: baseline;
+							.text {
+								font-size: 28rpx;
+								line-height: 40rpx;
+							}
+							.price {
+								margin: 0 8rpx;
+								font-size: 64rpx;
+								line-height: 76rpx;
+							}
+						}
+						.coupon-info {
+							margin-left: 24rpx;
+							display: inline-flex;
+							flex-direction: column;
+							justify-content: space-between;
+							.condition {
+								color: #000;
+								font-size: 28rpx;
+								line-height: 40rpx;
+								font-weight: 500;
+							}
+							.indate {
+								color: #666;
+								font-size: 22rpx;
+								line-height: 32rpx;
+							}
+						}
+					}
+					.coupon-explain {
+						white-space: nowrap;
+						padding-top: 16rpx;
+						font-size: 0;
+						color: #666;
+						line-height: 32rpx;
+						text {
+							font-size: 22rpx;
+						}
+					}
+
+					.store-mark {
+						background: #ffb760;
+					}
+					.product-mark {
+						background: #fe8993;
+					}
+					.disabled-mark {
+						background: #999;
+					}
+
+					.main-mark {
+						width: 100rpx;
+						height: 36rpx;
+						border-radius: 0 0 16rpx 0px;
+						position: absolute;
+						left: 0;
+						top: 0;
+						text-align: center;
+						line-height: 36rpx;
+						font-size: 20rpx;
+						color: #fff;
+					}
+				}
+				.stub-ticket {
+					// border-left: 2rpx dashed #faccd0;
+					// width: 200rpx;
+					width: 108rpx;
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					position: relative;
+					.stub-mark {
+						width: 104rpx;
+						height: 100rpx;
+						position: absolute;
+						right: 0;
+						top: 0;
+						z-index: 1;
+					}
+					.product-btn {
+						background: #e60113;
+					}
+					.store-btn {
+						background: #fe8c02;
+					}
+					.get-coupon-button {
+						width: 152rpx;
+						height: 60rpx;
+						border-radius: 30rpx;
+						line-height: 60rpx;
+						text-align: center;
+						font-size: 24rpx;
+						color: #fff;
+						z-index: 2;
+					}
+					.choosebox {
+            width: 36rpx;
+            height: 36rpx;
+          }
+				}
+			}
+		}
+	}
+}
+
+.estimate-module {
+	text-align: center;
+	.estimate-card {
+        border-radius: 8rpx;
+        border: 2rpx solid #ffb1b8;
+        padding: 0;
+        font-size: 18rpx;
+        display: inline-block;
+        color: #ff0a35;
+        text-align: center;
+        .text {
+            background: rgba(255, 10, 53, 0.08);
+            padding: 4rpx 12rpx;
+            line-height: 28rpx;
+			font-size: 18rpx;
+        }
+        .price {
+            padding: 4rpx 12rpx;
+            line-height: 28rpx;
+			font-size: 18rpx;
+        }
+    }
+	.estimate-card-final-price {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 20rpx 24rpx;
+		background: rgba(255,10,53,0.08);
+		border-radius: 24rpx;
+		color: #FF0A35;
+		.price {
+			font-size: 30rpx;
+			font-weight: bold;
+		}
+		.text {
+			margin-top: 4rpx;
+			font-size: 22rpx;
+		}
+	}
+	.detail-bubble {
+		// border: 0.5rpx solid #FF0A35;
+		border-radius: 20rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 26rpx 0;
+		position: relative;
+		background: url('https://wsjc-web-1301582899.cos.ap-guangzhou.myqcloud.com/wsf-mall/coupon/coupon_border.png') no-repeat;
+		background-size: 100% 100%;
+		.detail-bubble-title {
+			padding-bottom: 20rpx;
+			font-size: 28rpx;
+			font-weight: 500;
+			color: #000;
+			line-height: 36rpx;
+		}
+		.detail-bubble-content {
+			// margin: 20rpx 0 4rpx 0;
+			font-size: 30rpx;
+			font-weight: 600;
+			color: #FF0A35;
+			line-height: 34rpx;
+		}
+		.nonuse-content {
+			margin-top: 122rpx;
+			text-align: center;
+			font-size: 28rpx;
+			font-weight: 500;
+			color: #999;
+			line-height: 36rpx;
+		}
+		// &::before{
+		// 	content: '';
+		// 	width: 0;
+		// 	height: 0;
+		// 	position: absolute;
+		// 	top: -14rpx;
+		// 	left: 50%;
+		// 	transform: translateX(-50%);
+		// 	border-left: 16rpx solid transparent;
+    	// 	border-right: 16rpx solid transparent;
+    	// 	border-bottom: 12rpx solid #FF0A35;
+		// }
+		// &::after{
+		// 	content: '';
+		// 	width: 0;
+		// 	height: 0;
+		// 	position: absolute;
+		// 	top: -12rpx;
+		// 	left: 50%;
+		// 	transform: translateX(-50%);
+		// 	border-left: 16rpx solid transparent;
+    	// 	border-right: 16rpx solid transparent;
+    	// 	border-bottom: 12rpx solid #fff;
+		// }
+
+		.detail-bubble-box {
+			display: flex;
+			align-items: center;
+			margin-bottom: 76rpx;
+		}
+		.price-type {
+			margin: 0 26rpx;
+		}
+		.price-box {
+			position: relative;
+		}
+		.estimate-card {
+			white-space: nowrap;
+			position: absolute;
+			right: 50%;
+			transform: translateX(50%);
+		}
+	}
+	.font-din {
+		font-family: DINAlternate-Bold, DINAlternate;
+	}
+}
+.coupon-confirm-button {
+	margin: 10rpx 8rpx;
+	height: 80rpx;
+	background: linear-gradient(90deg, #FF5F2E 0%, #FF0A35 100%);
+	border-radius: 38rpx;
+	line-height: 80rpx;
+	text-align: center;
+	color: #fff;
+	font-size: 28rpx;
+}
+.coupon-list-title {
+    color: #222;
+    font-size: 30rpx;
+    font-weight: bold;
+    margin-top: 32rpx;
+    .ic_youhui {
+        width: 36rpx;
+        height: 36rpx;
+        margin-right: 8rpx;
+    }
+}
+</style>

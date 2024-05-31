@@ -1,0 +1,134 @@
+.money-content {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  .money-content-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 72rpx;
+    span:first-of-type {
+      font-size: 26rpx;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #191919;
+    }
+  }
+  .money-content-line:nth-of-type(1) {
+    span:last-of-type {
+      font-size: 26rpx;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #191919;
+    }
+  }
+  .money-content-coupon {
+    span:last-of-type {
+      font-size: 26rpx;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #ff0a35;
+    }
+  }
+  .money-content-true {
+    span:last-of-type {
+      font-size: 22rpx;
+      font-family: DINAlternate-Bold, DINAlternate;
+      font-weight: bold;
+      color: #ff0a35;
+    }
+  }
+}
+.store-adress-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 20rpx;
+  width: 100%;
+  image {
+    width: 40rpx;
+    height: 40rpx;
+    margin-right: 8rpx;
+  } 
+  > view {
+    display: flex;
+    align-items: center;
+    text {
+      font-size: 24rpx;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #646a72;
+      line-height: 24rpx;
+    }
+  }
+}
+.store-adress-footer-center{
+  justify-content: center;
+}
+
+.motor-text {
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  margin: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  > view:first-of-type {
+    display: flex;
+    align-items: center;
+    image {
+      width: 48rpx;
+      height: 48rpx;
+      margin-right: 8rpx;
+    }
+    text {
+      font-size: 32rpx;
+      font-family: PingFangSC-Semibold, PingFang SC;
+      font-weight: 600;
+      color: #191919;
+      line-height: 40rpx;
+    }
+  }
+  > view:last-of-type {
+    display: flex;
+    align-items: center;
+    image {
+      width: 32rpx;
+      height: 32rpx;
+      margin-left: 8rpx;
+    }
+    text {
+      font-size: 22rpx;
+      font-family: PingFangSC-Regular, PingFang SC;
+      font-weight: 400;
+      color: #999999;
+      line-height: 30rpx;
+    }
+  }
+}
+// .u-money-border-top{
+//   position: relative
+// }
+
+// .u-money-border-top:after{
+//   	/* #ifndef APP-NVUE */
+// 	content: ' ';
+// 	/* #endif */
+// 	position: absolute;
+// 	left: 0;
+// 	top: 0;
+// 	pointer-events: none;
+// 	box-sizing: border-box;
+// 	-webkit-transform-origin: 0 0;
+// 	transform-origin: 0 0;
+// 	// 多加0.1%，能解决有时候边框缺失的问题
+// 	width: 199.8%;
+// 	height: 199.7%;
+// 	transform: scale(0.5, 0.5);
+// 	border: 0 solid $u-border-color;
+// 	z-index: 2;
+//   border-top-width: 1rpx
+// }

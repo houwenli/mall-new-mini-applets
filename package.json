@@ -1,0 +1,19 @@
+{
+  "name": "mall-new-mini-applets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {
+    "dayjs": "^1.11.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.wsecar.cn/wsfmall/web/mall-new-mini-applets.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

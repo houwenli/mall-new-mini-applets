@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "uni_modules",
+    "uview-v1_1.8.6"
+  ]
+}
